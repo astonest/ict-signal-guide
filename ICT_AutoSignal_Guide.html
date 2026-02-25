@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT Auto Signal v6 — Indicator Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #080c10;
+    --surface:  #0d1117;
+    --border:   #1e2d3d;
+    --green:    #00ff88;
+    --red:      #ff3b5c;
+    --aqua:     #00d4ff;
+    --yellow:   #ffd166;
+    --orange:   #ff9a3c;
+    --muted:    #4a5568;
+    --text:     #c9d1d9;
+    --dim:      #6b7280;
+    --mono:     'Share Tech Mono', monospace;
+    --head:     'Barlow Condensed', sans-serif;
+    --body:     'Barlow', sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.12) 2px,rgba(0,0,0,0.12) 4px);
+    pointer-events:none;
+    z-index:999;
+  }
+  .hero {
+    position: relative;
+    padding: 80px 40px 60px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero::before {
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,255,136,0.06) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+  .hero h1 {
+    font-family: var(--head);
+    font-weight: 900;
+    font-size: clamp(40px, 6vw, 76px);
+    line-height: 1;
+    letter-spacing: -1px;
+    color: #fff;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+  .hero h1 span { color: var(--green); }
+  .hero-sub {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--dim);
+    max-width: 560px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.35s forwards;
+  }
+  .hero-badges {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-top: 28px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.45s forwards;
+  }
+  .badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    border: 1px solid;
+  }
+  .badge-green  { color: var(--green);  border-color: rgba(0,255,136,0.3);  background: rgba(0,255,136,0.05); }
+  .badge-red    { color: var(--red);    border-color: rgba(255,59,92,0.3);   background: rgba(255,59,92,0.05); }
+  .badge-aqua   { color: var(--aqua);   border-color: rgba(0,212,255,0.3);   background: rgba(0,212,255,0.05); }
+  .badge-yellow { color: var(--yellow); border-color: rgba(255,209,102,0.3); background: rgba(255,209,102,0.05); }
+  .badge-orange { color: var(--orange); border-color: rgba(255,154,60,0.3);  background: rgba(255,154,60,0.05); }
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex;
+    background: rgba(8,12,16,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display:none; }
+  .nav a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 14px 20px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav a:hover { color: var(--green); border-bottom-color: var(--green); }
+  .wrapper { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+  section {
+    padding: 64px 0 48px;
+    border-bottom: 1px solid rgba(30,45,61,0.5);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  section.visible { opacity: 1; transform: none; }
+  .sec-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: 32px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    margin-bottom: 24px;
+  }
+  h3 {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 18px;
+    color: #fff;
+    letter-spacing: 0.3px;
+    margin-bottom: 10px;
+    margin-top: 28px;
+  }
+  p { color: var(--text); margin-bottom: 14px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+  @media(max-width:700px) { .grid-2,.grid-3 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--green); transform: translateY(-2px); }
+  .card-accent { position:absolute; top:0; left:0; width:3px; height:100%; border-radius:4px 0 0 4px; }
+  .card h3 { margin-top: 0; font-size: 16px; }
+  .card p  { font-size: 14px; color: var(--dim); margin-bottom: 0; }
+  .accent-green  { background: var(--green); }
+  .accent-red    { background: var(--red); }
+  .accent-aqua   { background: var(--aqua); }
+  .accent-yellow { background: var(--yellow); }
+  .accent-orange { background: var(--orange); }
+  .flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 28px 0; }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 18px;
+    font-size: 13px;
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+  }
+  .flow-step .num { font-family: var(--mono); font-size: 10px; color: var(--green); display: block; margin-bottom: 4px; letter-spacing: 1px; }
+  .flow-step .label { color: #fff; font-weight: 500; font-size: 13px; }
+  .flow-arrow { font-size: 16px; color: var(--muted); padding: 0 8px; flex-shrink: 0; }
+  .param-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .param-table th { text-align: left; font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .param-table td { padding: 10px 14px; border-bottom: 1px solid rgba(30,45,61,0.5); vertical-align: top; }
+  .param-table tr:last-child td { border-bottom: none; }
+  .param-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .param-name { font-family: var(--mono); font-size: 12px; color: var(--aqua); }
+  .param-val  { font-family: var(--mono); font-size: 12px; color: var(--yellow); white-space: nowrap; }
+  .param-desc { color: var(--dim); font-size: 13px; }
+  .code-block {
+    background: #070b0f;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    border-radius: 4px;
+    padding: 18px 20px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin: 16px 0;
+    color: var(--text);
+  }
+  .c-g { color: var(--green); }
+  .c-r { color: var(--red); }
+  .c-y { color: var(--yellow); }
+  .c-a { color: var(--aqua); }
+  .c-d { color: var(--dim); }
+  .c-o { color: var(--orange); }
+  .alert { border-radius: 4px; padding: 16px 20px; margin: 20px 0; font-size: 14px; display: flex; gap: 12px; align-items: flex-start; }
+  .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .alert-warn   { background: rgba(255,209,102,0.07); border: 1px solid rgba(255,209,102,0.25); }
+  .alert-warn .alert-icon { color: var(--yellow); }
+  .alert-tip    { background: rgba(0,255,136,0.05);  border: 1px solid rgba(0,255,136,0.2); }
+  .alert-tip  .alert-icon { color: var(--green); }
+  .alert-danger { background: rgba(255,59,92,0.07);  border: 1px solid rgba(255,59,92,0.25); }
+  .alert-danger .alert-icon { color: var(--red); }
+  .kz-row { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid rgba(30,45,61,0.5); flex-wrap: wrap; }
+  .kz-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .kz-name { font-family: var(--head); font-weight: 600; color: #fff; font-size: 15px; min-width: 140px; }
+  .kz-time { font-family: var(--mono); font-size: 12px; color: var(--dim); min-width: 180px; }
+  .kz-note { font-size: 13px; color: var(--dim); flex: 1; }
+  .rr-bar { display: flex; height: 36px; border-radius: 3px; overflow: hidden; margin: 20px 0 8px; font-family: var(--mono); font-size: 11px; }
+  .rr-sl  { background: rgba(255,59,92,0.25); border: 1px solid var(--red);   display:flex; align-items:center; justify-content:center; color:var(--red);   flex:1; }
+  .rr-tp1 { background: rgba(0,255,136,0.15); border: 1px solid var(--green); display:flex; align-items:center; justify-content:center; color:var(--green); flex:1.5; }
+  .rr-tp2 { background: rgba(0,212,255,0.12); border: 1px solid var(--aqua);  display:flex; align-items:center; justify-content:center; color:var(--aqua);  flex:3; }
+  .stats { display:flex; gap:16px; flex-wrap:wrap; margin:20px 0; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px 20px; flex: 1; min-width: 120px; text-align: center; }
+  .stat-val { font-family: var(--head); font-weight: 900; font-size: 30px; color: #fff; line-height:1; }
+  .stat-lbl { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 1.5px; margin-top: 6px; text-transform: uppercase; }
+  .checklist { list-style: none; margin: 16px 0; }
+  .checklist li { padding: 9px 0 9px 28px; position: relative; font-size: 14px; color: var(--text); border-bottom: 1px solid rgba(30,45,61,0.4); }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before { content: '✓'; position: absolute; left: 0; font-family: var(--mono); font-size: 12px; color: var(--green); }
+  .checklist li.no::before { content: '✕'; color: var(--red); }
+  footer { text-align: center; padding: 48px 40px; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 1px; border-top: 1px solid var(--border); }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrapper">
+    <div class="hero-tag">Pine Script v6 &nbsp;·&nbsp; Overlay Indicator &nbsp;·&nbsp; ICT Framework</div>
+    <h1>ICT Auto Signal <span>v6</span></h1>
+    <p class="hero-sub">Complete breakdown of the OB + FVG + BOS indicator — every module, parameter, signal logic, and optimization tip.</p>
+    <div class="hero-badges">
+      <span class="badge badge-green">Order Blocks</span>
+      <span class="badge badge-red">Fair Value Gaps</span>
+      <span class="badge badge-aqua">Market Structure</span>
+      <span class="badge badge-yellow">Kill Zones</span>
+      <span class="badge badge-orange">Auto SL/TP</span>
+    </div>
+  </div>
+</div>
+
+<nav class="nav">
+  <a href="#overview">Overview</a>
+  <a href="#structure">Structure</a>
+  <a href="#ob">Order Blocks</a>
+  <a href="#fvg">FVG</a>
+  <a href="#killzones">Kill Zones</a>
+  <a href="#signals">Signals</a>
+  <a href="#risk">SL / TP</a>
+  <a href="#params">Parameters</a>
+  <a href="#tips">Setup Tips</a>
+</nav>
+
+<section id="overview">
+  <div class="wrapper">
+    <div class="sec-label">// 01 — OVERVIEW</div>
+    <h2>What This Indicator Does</h2>
+    <p>ICT Auto Signal v6 automates the full Inner Circle Trader (ICT) methodology into a single overlay indicator. It identifies institutional order flow through five interconnected modules that work together to surface high-probability trade setups.</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-val" style="color:var(--aqua)">5</div><div class="stat-lbl">Modules</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--green)">200</div><div class="stat-lbl">Max Boxes</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--yellow)">2</div><div class="stat-lbl">Alert Types</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--orange)">3.0</div><div class="stat-lbl">Version</div></div>
+    </div>
+    <div class="sec-label" style="margin-top:32px">// SIGNAL FLOW</div>
+    <div class="flow">
+      <div class="flow-step"><span class="num">STEP 01</span><span class="label">Market Bias</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="num">STEP 02</span><span class="label">OB Detection</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="num">STEP 03</span><span class="label">Price in Zone</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="num">STEP 04</span><span class="label">Confirm Candle</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="num">STEP 05</span><span class="label">Signal + SL/TP</span></div>
+    </div>
+    <div class="alert alert-tip">
+      <span class="alert-icon">💡</span>
+      <div>All five modules feed into one final signal condition. Enable FVG confluence and Kill Zone filters for the highest-conviction setups — fewer signals, better quality.</div>
+    </div>
+  </div>
+</section>
+
+<section id="structure">
+  <div class="wrapper">
+    <div class="sec-label">// 02 — MARKET STRUCTURE</div>
+    <h2>BOS &amp; CHoCH</h2>
+    <p>The foundation of every signal. The indicator uses <code style="font-family:var(--mono);color:var(--aqua);font-size:13px">ta.pivothigh / ta.pivotlow</code> with a configurable lookback to identify swing points, then classifies each break.</p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-accent accent-green"></div>
+        <h3 style="color:var(--green)">BOS — Break of Structure</h3>
+        <p>Trend continuation signal. A bullish BOS fires when price breaks above the prior swing high in the direction of the existing bias. Drawn as a dashed lime line — confirms the trend is intact.</p>
+        <div class="code-block" style="margin-top:14px">
+          <span class="c-d">// Bullish BOS logic</span><br>
+          <span class="c-g">bos_bull</span> = bull_bias <span class="c-y">and</span><br>
+          &nbsp;&nbsp;high &gt; last_sh <span class="c-y">and</span><br>
+          &nbsp;&nbsp;high[1] &lt;= last_sh
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-accent accent-aqua"></div>
+        <h3 style="color:var(--aqua)">CHoCH — Change of Character</h3>
+        <p>Trend reversal signal. Fires when price breaks a swing level against the current bias. Immediately flips <code style="font-family:var(--mono);color:var(--aqua);font-size:12px">bull_bias</code> — changes which OBs and signals are valid from that bar forward.</p>
+        <div class="code-block" style="margin-top:14px">
+          <span class="c-d">// Bearish CHoCH logic</span><br>
+          <span class="c-r">choch_bear</span> = bull_bias <span class="c-y">and</span><br>
+          &nbsp;&nbsp;not na(last_sl) <span class="c-y">and</span><br>
+          &nbsp;&nbsp;low &lt; last_sl
+        </div>
+      </div>
+    </div>
+    <div class="alert alert-warn" style="margin-top:20px">
+      <span class="alert-icon">⚠️</span>
+      <div><strong style="color:var(--yellow)">Lookback setting matters.</strong> Default is 10 bars. Lower values (5–7) = more sensitive, more signals, more noise. Higher values (15–20) = cleaner structure, fewer but stronger BOS/CHoCH labels.</div>
+    </div>
+  </div>
+</section>
+
+<section id="ob">
+  <div class="wrapper">
+    <div class="sec-label">// 03 — ORDER BLOCKS</div>
+    <h2>Order Block Detection</h2>
+    <p>Order Blocks (OBs) represent the last candle before a strong impulse move — the price level where institutional orders were placed. The indicator auto-detects them using an ATR-filtered impulse threshold.</p>
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-accent accent-green"></div>
+        <h3 style="color:var(--green)">Bullish OB</h3>
+        <p>Triggered when a bullish impulse candle (body &gt; 0.5× ATR) is preceded by a bearish candle. That bearish candle's range becomes the OB zone. Price returning here signals a potential long.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent accent-red"></div>
+        <h3 style="color:var(--red)">Bearish OB</h3>
+        <p>Triggered when a bearish impulse candle is preceded by a bullish candle. That bullish candle's range becomes the OB zone. Price returning here signals a potential short.</p>
+      </div>
+    </div>
+    <div class="code-block">
+      <span class="c-d">// Impulse detection — ATR filtered</span><br>
+      <span class="c-g">bull_impulse</span> = close &gt; open <span class="c-y">and</span> (close - open) &gt; atr14 * <span class="c-o">0.5</span><br>
+      <span class="c-r">bear_impulse</span> = close &lt; open <span class="c-y">and</span> (open - close) &gt; atr14 * <span class="c-o">0.5</span><br><br>
+      <span class="c-d">// OB zone = the candle BEFORE the impulse</span><br>
+      ob_top    = math.max(open[<span class="c-o">1</span>], close[<span class="c-o">1</span>])<br>
+      ob_bottom = math.min(open[<span class="c-o">1</span>], close[<span class="c-o">1</span>])
+    </div>
+    <div class="alert alert-tip">
+      <span class="alert-icon">💡</span>
+      <div>The impulse ATR multiplier of 0.5 can be increased in code to <code style="font-family:var(--mono);font-size:12px">0.75</code> or <code style="font-family:var(--mono);font-size:12px">1.0</code> to only mark the strongest institutional candles — reduces OB clutter significantly on fast markets like NQ.</div>
+    </div>
+  </div>
+</section>
+
+<section id="fvg">
+  <div class="wrapper">
+    <div class="sec-label">// 04 — FAIR VALUE GAPS</div>
+    <h2>Fair Value Gap Detection</h2>
+    <p>An FVG is a three-candle imbalance where price moves so fast that a gap forms between candle[0] and candle[2]. Institutions use these levels as magnets — price typically returns to fill the gap before continuing.</p>
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-accent" style="background:var(--aqua)"></div>
+        <h3 style="color:var(--aqua)">Bullish FVG</h3>
+        <p><strong style="color:#fff">Condition:</strong> <code style="font-family:var(--mono);font-size:12px;color:var(--aqua)">low[0] &gt; high[2]</code></p>
+        <p>Gap above two bars ago. Price moved up so fast it left an unfilled zone. Teal box marks the imbalance area between <code style="font-family:var(--mono);font-size:12px;color:var(--aqua)">high[2]</code> and <code style="font-family:var(--mono);font-size:12px;color:var(--aqua)">low[0]</code>.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent accent-orange"></div>
+        <h3 style="color:var(--orange)">Bearish FVG</h3>
+        <p><strong style="color:#fff">Condition:</strong> <code style="font-family:var(--mono);font-size:12px;color:var(--orange)">high[0] &lt; low[2]</code></p>
+        <p>Gap below two bars ago. Price dropped so fast it left an imbalance. Orange box marks the zone between <code style="font-family:var(--mono);font-size:12px;color:var(--orange)">high[0]</code> and <code style="font-family:var(--mono);font-size:12px;color:var(--orange)">low[2]</code>.</p>
+      </div>
+    </div>
+    <h3>Using FVG as Confluence</h3>
+    <p>Enable <strong style="color:#fff">Require FVG Confluence</strong> in the Entry Signals settings. A long signal only fires if price is simultaneously inside a bullish OB AND inside a bullish FVG. Fewer signals, much higher probability.</p>
+    <div class="alert alert-warn">
+      <span class="alert-icon">⚠️</span>
+      <div>On fast-moving markets like MNQ during NY Open, FVGs can form and fill within the same session. FVG mitigation uses a close-through check — on 1m or 2m charts this fires frequently. Use 5m as your primary FVG reference timeframe.</div>
+    </div>
+  </div>
+</section>
+
+<section id="killzones">
+  <div class="wrapper">
+    <div class="sec-label">// 05 — KILL ZONES</div>
+    <h2>Kill Zones</h2>
+    <p>ICT Kill Zones are the high-probability time windows when institutional volume is highest. The indicator supports three sessions with background shading and an optional signal filter.</p>
+    <div style="margin:24px 0">
+      <div class="kz-row">
+        <div class="kz-dot" style="background:rgba(50,100,255,0.9)"></div>
+        <div class="kz-name">London Open</div>
+        <div class="kz-time">02:00 – 05:00 UTC-5</div>
+        <div class="kz-note">Best for Euro pairs + NQ overnight. Often sets the day's high or low via liquidity sweep before reversal.</div>
+      </div>
+      <div class="kz-row">
+        <div class="kz-dot" style="background:rgba(255,209,102,0.9)"></div>
+        <div class="kz-name">NY Open</div>
+        <div class="kz-time">07:00 – 10:00 UTC-5</div>
+        <div class="kz-note">Most powerful session for futures. RTH open at 9:30 EST is inside this window. Highest OB + FVG hit rate. Primary signal window for ES/NQ/MNQ.</div>
+      </div>
+      <div class="kz-row" style="border-bottom:none">
+        <div class="kz-dot" style="background:rgba(150,100,255,0.9)"></div>
+        <div class="kz-name">NY Lunch</div>
+        <div class="kz-time">12:00 – 13:00 UTC-5</div>
+        <div class="kz-note">Low volume chop window. Disabled by default. Enable only for afternoon reversal setups — not recommended for prop accounts.</div>
+      </div>
+    </div>
+    <div class="alert alert-tip">
+      <span class="alert-icon">💡</span>
+      <div>For the Alpha Futures 50K Zero, enable <strong style="color:#fff">Require Kill Zone</strong> and keep only NY Open active. This forces all signals into the 7–10 AM CT window — aligns perfectly with the recommended open session strategy and keeps you done trading before lunch.</div>
+    </div>
+    <div class="alert alert-warn">
+      <span class="alert-icon">⚠️</span>
+      <div><strong style="color:var(--yellow)">UTC Offset:</strong> The time logic runs on UTC-5 baseline. For CME futures on TradingView, the default offset of 0 is typically correct. If backgrounds appear at wrong times, adjust the UTC Offset input until London session shows 2–5 AM on your chart.</div>
+    </div>
+  </div>
+</section>
+
+<section id="signals">
+  <div class="wrapper">
+    <div class="sec-label">// 06 — ENTRY SIGNALS</div>
+    <h2>Signal Logic</h2>
+    <p>Signals require all active conditions to pass simultaneously. Each layer adds confluence — more gates means fewer but higher-quality signals.</p>
+    <div class="code-block">
+      <span class="c-d">// ── LONG signal — all conditions must pass ──</span><br>
+      <span class="c-g">long_sig</span> =<br>
+      &nbsp;&nbsp;show_long                  <span class="c-d">// user enabled</span><br>
+      &nbsp;&nbsp;<span class="c-y">and</span> bull_bias              <span class="c-d">// bias is bullish (set by CHoCH)</span><br>
+      &nbsp;&nbsp;<span class="c-y">and</span> price_in_bull_ob()     <span class="c-d">// low is touching bullish OB zone</span><br>
+      &nbsp;&nbsp;<span class="c-y">and</span> confirm_bull           <span class="c-d">// engulfing or pin bar candle</span><br>
+      &nbsp;&nbsp;<span class="c-y">and</span> fvg_long_ok            <span class="c-d">// FVG confluence (optional gate)</span><br>
+      &nbsp;&nbsp;<span class="c-y">and</span> kz_ok                  <span class="c-d">// Kill Zone active (optional gate)</span>
+    </div>
+    <h3>Candle Confirmation Patterns</h3>
+    <div class="grid-2" style="margin-top:12px">
+      <div class="card">
+        <div class="card-accent accent-green"></div>
+        <h3 style="color:var(--green); font-size:15px">Bullish Engulfing</h3>
+        <p>Close &gt; open, closes above prior high, opens at or below prior close. Strong conviction candle showing buyers absorbed all sell pressure.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent accent-green"></div>
+        <h3 style="color:var(--green); font-size:15px">Bullish Pin Bar (Hammer)</h3>
+        <p>Lower wick &gt; 2× body, small upper wick (&lt;0.25 ATR). Rejection of lower prices — smart money absorbed sell orders at the OB zone.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent accent-red"></div>
+        <h3 style="color:var(--red); font-size:15px">Bearish Engulfing</h3>
+        <p>Close &lt; open, closes below prior low, opens at or above prior close. Sellers overwhelmed buyers — bearish OB retest confirmed.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent accent-red"></div>
+        <h3 style="color:var(--red); font-size:15px">Bearish Pin Bar (Shooting Star)</h3>
+        <p>Upper wick &gt; 2× body, small lower wick. Institutional supply entered aggressively at the OB — rejection of higher prices.</p>
+      </div>
+    </div>
+    <div class="alert alert-danger" style="margin-top:24px">
+      <span class="alert-icon">🚨</span>
+      <div><strong style="color:var(--red)">Zone membership uses low (longs) and high (shorts)</strong> — not close. A signal can fire mid-wick even if the close is outside the zone. For stricter entries, manually confirm the close is within the OB box before executing.</div>
+    </div>
+  </div>
+</section>
+
+<section id="risk">
+  <div class="wrapper">
+    <div class="sec-label">// 07 — RISK MANAGEMENT</div>
+    <h2>Auto SL / TP Lines</h2>
+    <p>On every signal, the indicator auto-draws Stop Loss and two Take Profit levels based on ATR and user-defined R-multiples. Lines extend 20 bars visually.</p>
+    <div class="code-block">
+      <span class="c-d">// Long trade levels</span><br>
+      <span class="c-r">sl_price</span>  = low  - atr14 * <span class="c-o">sl_atr_mult</span>   <span class="c-d">// default: 1.0× ATR below signal low</span><br>
+      risk      = close - sl_price<br>
+      <span class="c-g">tp1_price</span> = close + risk * <span class="c-o">tp1_r</span>        <span class="c-d">// default: 1.5R</span><br>
+      <span class="c-a">tp2_price</span> = close + risk * <span class="c-o">tp2_r</span>        <span class="c-d">// default: 3.0R</span>
+    </div>
+    <div class="rr-bar">
+      <div class="rr-sl">SL — 1R</div>
+      <div class="rr-tp1">TP1 — 1.5R</div>
+      <div class="rr-tp2">TP2 — 3.0R</div>
+    </div>
+    <p style="font-size:12px;color:var(--dim);font-family:var(--mono)">Default R-multiple visualization</p>
+    <h3>Recommended Settings for Alpha Futures 50K</h3>
+    <div class="grid-3" style="margin-top:12px">
+      <div class="card">
+        <div class="card-accent accent-red"></div>
+        <h3 style="color:var(--red);font-size:14px">SL Multiplier — 0.75×</h3>
+        <p>Tighter stop placed inside the OB zone. Keeps dollar risk under $150–200 per trade on 1–2 MNQ contracts. Better R-ratio from tighter placement.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent accent-green"></div>
+        <h3 style="color:var(--green);font-size:14px">TP1 at 1.5R</h3>
+        <p>Scale out 50–70% of position here. Locks profit and funds the runner to TP2 essentially risk-free after BE stop move.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent accent-aqua"></div>
+        <h3 style="color:var(--aqua);font-size:14px">TP2 at 3.0R</h3>
+        <p>Runner target. Move SL to breakeven immediately after TP1 is hit. Let runner extend to next FVG or structural OB level.</p>
+      </div>
+    </div>
+    <div class="alert alert-warn" style="margin-top:20px">
+      <span class="alert-icon">⚠️</span>
+      <div>SL/TP lines are <strong style="color:var(--yellow)">visual reference only</strong> — they do not represent active orders. You must set bracket orders manually in your platform (Rithmic, Tradovate, NinjaTrader, etc.) based on the plotted levels.</div>
+    </div>
+  </div>
+</section>
+
+<section id="params">
+  <div class="wrapper">
+    <div class="sec-label">// 08 — PARAMETER REFERENCE</div>
+    <h2>Full Settings Guide</h2>
+
+    <h3 style="color:var(--aqua)">⚡ Market Structure</h3>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
+      <tr><td class="param-name">Swing Lookback</td><td class="param-val">10</td><td class="param-desc">Bars left/right to confirm a swing high/low pivot. Higher = cleaner, fewer structure labels.</td></tr>
+      <tr><td class="param-name">Show BOS</td><td class="param-val">true</td><td class="param-desc">Draw dashed lines + label at each trend-continuation structure break.</td></tr>
+      <tr><td class="param-name">Show CHoCH</td><td class="param-val">true</td><td class="param-desc">Draw dotted lines + label at each bias flip. Most critical for directional context.</td></tr>
+    </table>
+
+    <h3 style="color:var(--green)">📦 Order Blocks</h3>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
+      <tr><td class="param-name">Show Order Blocks</td><td class="param-val">true</td><td class="param-desc">Toggle OB zone boxes on chart.</td></tr>
+      <tr><td class="param-name">OB Extension</td><td class="param-val">30 bars</td><td class="param-desc">How far right each box extends. Increase for wider visual window on higher timeframes.</td></tr>
+      <tr><td class="param-name">Delete Mitigated OBs</td><td class="param-val">true</td><td class="param-desc">Auto-removes OBs when price closes through them. Always keep ON to avoid stale zones.</td></tr>
+    </table>
+
+    <h3 style="color:var(--orange)">🔲 Fair Value Gaps</h3>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
+      <tr><td class="param-name">Show FVGs</td><td class="param-val">true</td><td class="param-desc">Toggle FVG zone boxes on chart.</td></tr>
+      <tr><td class="param-name">FVG Extension</td><td class="param-val">30 bars</td><td class="param-desc">How far right each FVG box extends before expiring visually.</td></tr>
+      <tr><td class="param-name">Delete Mitigated FVGs</td><td class="param-val">true</td><td class="param-desc">Removes FVGs when price closes back through the gap. Keep ON for clean display.</td></tr>
+    </table>
+
+    <h3 style="color:var(--yellow)">🎯 Entry Signals</h3>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
+      <tr><td class="param-name">Require FVG Confluence</td><td class="param-val">false</td><td class="param-desc">Only signal when inside matching FVG zone simultaneously. Recommended ON for prop accounts.</td></tr>
+      <tr><td class="param-name">Require Kill Zone</td><td class="param-val">false</td><td class="param-desc">Only signal during active kill zone sessions. Turn ON for NY Open-only discipline.</td></tr>
+      <tr><td class="param-name">Label Size</td><td class="param-val">Normal</td><td class="param-desc">Visual size of ▲ LONG / ▼ SHORT labels. Use Tiny on crowded charts.</td></tr>
+    </table>
+
+    <h3 style="color:var(--red)">📐 Risk Management</h3>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
+      <tr><td class="param-name">SL ATR Multiplier</td><td class="param-val">1.0×</td><td class="param-desc">Distance from entry to SL as ATR multiple. Reduce to 0.75 for tighter stops with better R-ratio.</td></tr>
+      <tr><td class="param-name">TP1 R-Multiple</td><td class="param-val">1.5R</td><td class="param-desc">First take profit. Scale out majority here and move SL to breakeven.</td></tr>
+      <tr><td class="param-name">TP2 R-Multiple</td><td class="param-val">3.0R</td><td class="param-desc">Runner target. Let remaining position extend toward next key ICT level.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="tips">
+  <div class="wrapper">
+    <div class="sec-label">// 09 — SETUP TIPS</div>
+    <h2>Recommended Configuration</h2>
+    <p>Optimized settings for futures day trading on the Alpha Futures 50K Zero account.</p>
+    <div class="grid-2" style="margin-bottom:24px">
+      <div>
+        <h3>Do These</h3>
+        <ul class="checklist">
+          <li>Swing Lookback: <strong style="color:#fff">7–10</strong> on 5m chart</li>
+          <li>Require Kill Zone: <strong style="color:var(--green)">ON</strong> — NY Open only</li>
+          <li>Require FVG Confluence: <strong style="color:var(--green)">ON</strong></li>
+          <li>Delete Mitigated OBs + FVGs: <strong style="color:var(--green)">ON</strong></li>
+          <li>SL Multiplier: <strong style="color:#fff">0.75</strong></li>
+          <li>Scale out at TP1 — move SL to BE immediately</li>
+          <li>Confirm 15m CHoCH before taking 5m signals</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Avoid These</h3>
+        <ul class="checklist">
+          <li class="no">NY Lunch Kill Zone — choppy, low value</li>
+          <li class="no">Signals against the CHoCH direction</li>
+          <li class="no">Entering without a confirmation candle close</li>
+          <li class="no">OBs that formed more than 20 bars ago</li>
+          <li class="no">Signals near major macro news events</li>
+          <li class="no">More than 2 setups per session</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Timeframe Stack</h3>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-accent accent-aqua"></div>
+        <h3 style="color:var(--aqua);font-size:14px">15m — Context</h3>
+        <p>Read CHoCH and BOS to set daily bias. Do not take signals here. Just answer: is today bullish or bearish?</p>
+      </div>
+      <div class="card">
+        <div class="card-accent accent-green"></div>
+        <h3 style="color:var(--green);font-size:14px">5m — Signal Timeframe</h3>
+        <p>Primary execution chart. OBs + FVGs are most actionable here during kill zones. All entries come from this level.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent accent-yellow"></div>
+        <h3 style="color:var(--yellow);font-size:14px">1m — Entry Refine</h3>
+        <p>After a 5m signal, drop to 1m to tighten entry within the OB zone for a better R-ratio and smaller SL distance.</p>
+      </div>
+    </div>
+
+    <div class="alert alert-tip" style="margin-top:28px">
+      <span class="alert-icon">🎯</span>
+      <div><strong style="color:#fff">Alpha Futures 50K Zero — eval strategy:</strong> Wait for NY Open kill zone + CHoCH on 15m + OB+FVG confluence on 5m. This combination fires 1–3 times per week on MNQ/MES. Each clean 1.5R TP1 hit ≈ $150–250. You need $3,000 to pass — aim for 10–15 disciplined setups over 2–3 weeks, not one big day.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>ICT AUTO SIGNAL v6 &nbsp;·&nbsp; PINE SCRIPT v6 &nbsp;·&nbsp; FOR EDUCATIONAL &amp; ANALYTICAL USE ONLY</div>
+  <div style="margin-top:8px;font-size:10px;color:#2d3748">Not financial advice. Past signals do not guarantee future results.</div>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.07 });
+  sections.forEach(s => obs.observe(s));
+
+  const navLinks = document.querySelectorAll('.nav a');
+  const secObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        navLinks.forEach(l => l.style.color = '');
+        const a = document.querySelector('.nav a[href="#'+e.target.id+'"]');
+        if(a) a.style.color = 'var(--green)';
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => secObs.observe(s));
+</script>
+</body>
+</html>
